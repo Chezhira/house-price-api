@@ -1,83 +1,85 @@
 # 🏠 House Price Prediction API
-**CatBoost · FastAPI · Production-ready ML service**
-
 [![CI](https://github.com/Chezhira/House-Price-Prediction-API/actions/workflows/ci.yml/badge.svg)](https://github.com/Chezhira/House-Price-Prediction-API/actions/workflows/ci.yml)
 
-A production-oriented machine learning API that serves **house price predictions** via **FastAPI**, backed by a **CatBoost regression model**.  
-Built as a portfolio project with reproducibility, testing, and CI.
+Production-grade **House Price Prediction** service using **CatBoost** and **FastAPI** — packaged, tested, and CI-enabled.
 
----
+## Overview
+This project serves a trained regression model behind a clean HTTP API for real-time inference. The goal is not only model performance, but **production readiness**:
+- Reproducible Python packaging (`pyproject.toml`)
+- Input validation (Pydantic)
+- Automated tests (`pytest`)
+- CI pipeline (GitHub Actions)
 
-## What this project demonstrates
+## Tech Stack
+- Python 3.11+
+- CatBoost (tabular regression)
+- FastAPI (API layer)
+- pytest + httpx (tests)
+- GitHub Actions (CI)
 
-- FastAPI model serving (`/predict`)
-- Health endpoint (`/health`)
-- Pydantic request/response validation
-- Automated tests with `pytest`
-- GitHub Actions CI on push/PR to `main`
-- Modern packaging (`pyproject.toml`, `src/` layout)
-
----
-
-## API endpoints
-
-- `GET /health` — service health check  
-- `POST /predict` — returns predicted house price
-
-Interactive docs (when running locally):  
-`http://127.0.0.1:8000/docs`
-
----
-
-## Project structure
-
+## Project Structure
 ```text
 .
-├─ src/
-│  └─ house_price_api/        # application package
-├─ tests/                     # pytest tests
-├─ .github/workflows/ci.yml   # CI workflow
-├─ pyproject.toml             # dependencies + tooling config
-└─ README.md
+├── src/
+│   └── house_price_api/        # application package
+├── tests/                      # automated tests (health + predict)
+├── .github/workflows/ci.yml    # GitHub Actions workflow
+├── pyproject.toml              # package + dependencies
+└── README.md
+Quickstart (Local)
+Recommended (Conda)
+# From repo root
+conda create -n house_price_api python=3.11 -y
+conda activate house_price_api
 
-Quickstart (Windows / PowerShell)
-1) Install (dev mode)
 python -m pip install --upgrade pip
 pip install -e ".[dev]"
-
-2) Run tests
 pytest -q
 
-3) Run the API
+Run the API
 
-Find where FastAPI() is created:
+Start the server (from repo root):
 
-Select-String -Path .\src\**\*.py -Pattern "FastAPI\(" -List
-
-
-Then run uvicorn using the module that contains app = FastAPI(...).
-Examples (yours may differ):
-
-uvicorn house_price_api.api:app --reload
-# or
 uvicorn house_price_api.main:app --reload
 
-Example prediction request
 
-Use /docs first to confirm the exact request schema.
+Then open:
 
-curl -X POST "http://127.0.0.1:8000/predict" `
-  -H "Content-Type: application/json" `
-  -d "{\"feature_1\": 123, \"feature_2\": 456}"
+Swagger UI: http://127.0.0.1:8000/docs
 
-CI
+Health: http://127.0.0.1:8000/health
 
-CI runs pytest on:
+If house_price_api.main:app doesn’t match your file name, use:
 
-pushes to main
+dir .\src\house_price_api
 
-pull requests targeting main
 
-Notes
+and replace main with the module that contains app = FastAPI().
 
-FastAPI’s TestClient needs httpx. This repo includes it (via dependencies and/or dev extras).
+API Endpoints
+GET /health
+
+Returns a simple status response to confirm the service is up.
+
+POST /predict
+
+Returns a price prediction for the provided feature payload.
+
+The exact request schema is documented in Swagger UI:
+http://127.0.0.1:8000/docs
+
+Tests
+
+Run all tests:
+
+pytest -q
+
+CI (GitHub Actions)
+
+CI runs on pushes and PRs to main and executes:
+
+pip install -e ".[dev]"
+
+pytest -q
+
+If CI fails with ModuleNotFoundError: httpx, ensure httpx is included in your dependency set (either main deps or dev extras).
