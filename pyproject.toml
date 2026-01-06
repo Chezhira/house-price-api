@@ -12,6 +12,12 @@ dependencies = [
   "catboost>=1.2",
 ]
 
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "httpx",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
